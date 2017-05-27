@@ -119,25 +119,21 @@ There are 2 ways to get started with Google Assistant([what is  Google Assistant
     Follow step 1. 2. 3. 4. in the  [guide](https://developers.google.com/assistant/sdk/prototype/getting-started-pi-python/config-dev-project-and-account#config-dev-project) to configure a project on Google Cloud Platform and create an OAuth Client ID JSON file. Don't forget to copy the JSON file to your Raspberry Pi.
 
 2. Authorize the Google Assistant SDK sample to make Google Assistant queries for the given Google Account. Reference the JSON file you copied over to the device in a previous step.
-    
-	```
+```
 pi@raspberrypi:~ $ google-oauthlib-tool --client-secrets /home/pi/client_secret_client-id.json --scope https://www.googleapis.com/auth/assistant-sdk-prototype --save --headless
 ```
-    
-    - `/home/pi/client_secret_client-id.json` should be the path of your JSON file, your should modify the commmand above
-    
-    - After running the command, it should display as shown below. Copy the URL and paste it into a browser (this can be done on your development machine, or any other machine). After you approve, a code will appear in your browser, such as "4/XXXX". Copy this and paste this code into the terminal.
-	
-		```
+   * `/home/pi/client_secret_client-id.json` should be the path of your JSON file, your should modify the commmand above
+   * After running the command, it should display as shown below. Copy the URL and paste it into a browser (this can be done on your development machine, or any other machine). After you approve, a code will appear in your browser, such as "4/XXXX". Copy this and paste this code into the terminal.
+```
 Please go to this URL: https://...
 Enter the authorization code:
 ```
-		- It should then display: OAuth credentials initialized.
-		- If instead it displays: InvalidGrantError then an invalid code was entered. Try again, taking care to copy and paste the entire code.
+   * It should then display: OAuth credentials initialized.
+   * If instead it displays: InvalidGrantError then an invalid code was entered. Try again, taking care to copy and paste the entire code.
 
 3. Start the Google Assistant demo
 
-    ```
+```
 pi@raspberrypi:~ $ alsamixer    // To adjust the volume
 pi@raspberrypi:~ $ source env/bin/activate
 (env) pi@raspberrypi:~ $ env/bin/google-assistant-demo
@@ -159,7 +155,7 @@ Each on-board APA102 LED has an additional driver chip. The driver chip takes ca
 - Activate SPI: `sudo raspi-config`; Go to "Interfacing Options"; Go to "SPI"; Enable SPI; Exit the tool and reboot
 - Get the APA102 Library and sample light programs(if you are using our [raspbian image](#about-our-raspbian-image), please skip this step): 
 
-	```
+```
 cd ~/
 git clone https://github.com/KillingJacky/APA102_Pi.git
 ```
