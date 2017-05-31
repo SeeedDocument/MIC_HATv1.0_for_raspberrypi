@@ -9,6 +9,7 @@ sku:
 ---
 
 ![](https://github.com/SeeedDocument/MIC_HATv1.0_for_raspberrypi/blob/master/img/mic_hatv1.0.png?raw=true)
+![](https://github.com/yexiaobo-seeedstudio/MIC_HATv1.0_for_raspberrypi/blob/master/img/2mics-zero-high-res.jpg?raw=true)
 
 ReSpeaker 2-Mics Pi HAT is a dual-microphone expansion board for Raspberry Pi designed for AI and voice applications. This means that you can build a more powerful and flexible voice product that integrates Amazon Alexa Voice Service, Google Assistant, and so on.
 
@@ -17,7 +18,7 @@ The board is developed based on WM8960, a low power stereo codec. There are 2 mi
 
 ## Features
 
-* Raspberry Pi compatible(Support Raspberry Pi Zero, Raspberry Pi 1 B+, Raspberry Pi 2 B and Raspberry Pi 3 B)
+* Raspberry Pi compatible(Support Raspberry Pi Zero and Zero W, Raspberry Pi B+, Raspberry Pi 2 B and Raspberry Pi 3 B)
 * 2 Microphones
 * 2 Grove Interfaces
 * 1 User Button
@@ -52,6 +53,7 @@ Mount ReSpeaker 2-Mics Pi HAT on your Raspberry Pi, make sure that the pins are 
 
 ![connection picture1](https://github.com/SeeedDocument/MIC_HATv1.0_for_raspberrypi/blob/master/img/connection1.jpg?raw=true)
 ![connection picture2](https://github.com/SeeedDocument/MIC_HATv1.0_for_raspberrypi/blob/master/img/connection2.jpg?raw=true)
+![connection picture3](https://github.com/yexiaobo-seeedstudio/MIC_HATv1.0_for_raspberrypi/blob/master/img/stack-on-zero.jpg?raw=true)
 
 ### Setup the driver on Raspberry Pi
 
