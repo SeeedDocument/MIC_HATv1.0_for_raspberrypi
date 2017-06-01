@@ -8,8 +8,7 @@ surveyurl:
 sku:
 ---
 
-![](https://github.com/SeeedDocument/MIC_HATv1.0_for_raspberrypi/blob/master/img/mic_hatv1.0.png?raw=true)
-![](https://github.com/yexiaobo-seeedstudio/MIC_HATv1.0_for_raspberrypi/blob/master/img/2mics-zero-high-res.jpg?raw=true)
+![](https://github.com/SeeedDocument/MIC_HATv1.0_for_raspberrypi/blob/master/img/2mics-zero-high-res.jpg?raw=true)
 
 ReSpeaker 2-Mics Pi HAT is a dual-microphone expansion board for Raspberry Pi designed for AI and voice applications. This means that you can build a more powerful and flexible voice product that integrates Amazon Alexa Voice Service, Google Assistant, and so on.
 
@@ -133,19 +132,30 @@ Enter the authorization code:
    * It should then display: OAuth credentials initialized.
    * If instead it displays: InvalidGrantError then an invalid code was entered. Try again, taking care to copy and paste the entire code.
 
-3. Start the Google Assistant demo
+3. Install **pulseaudio** and let it run in background
+```
+pi@raspberrypi:~ $ sudo apt install pulseaudio
+pi@raspberrypi:~ $ pulseaudio &
+[1] 1244
+pi@raspberrypi:~ $ W: [pulseaudio] server-lookup.c: Unable to contact D-Bus: org.freedesktop.DBus.Error.NotSupported: Unable to autolaunch a dbus-daemon without a $DISPLAY for X11
+W: [pulseaudio] main.c: Unable to contact D-Bus: org.freedesktop.DBus.Error.NotSupported: Unable to autolaunch a dbus-daemon without a $DISPLAY for X11
+E: [pulseaudio] bluez4-util.c: org.bluez.Manager.GetProperties() failed: org.freedesktop.DBus.Error.UnknownMethod: Method "GetProperties" with signature "" on interface "org.bluez.Manager" doesn't exist
+```
 
+* the pulseaudio error log could be ignored here
+
+4. Start the Google Assistant demo
 ```
 pi@raspberrypi:~ $ alsamixer    // To adjust the volume
 pi@raspberrypi:~ $ source env/bin/activate
 (env) pi@raspberrypi:~ $ env/bin/google-assistant-demo
 ```
 
-4. Say *Ok Google* or *Hey Google*, followed by your query. The Assistant should respond. If the Assistant does not respond, follow the [troubleshooting instructions](https://developers.google.com/assistant/sdk/prototype/getting-started-pi-python/troubleshooting#hotword). 
+5. Say *Ok Google* or *Hey Google*, followed by your query. The Assistant should respond. If the Assistant does not respond, follow the [troubleshooting instructions](https://developers.google.com/assistant/sdk/prototype/getting-started-pi-python/troubleshooting#hotword). 
 	
     ![run demo](https://github.com/SeeedDocument/MIC_HATv1.0_for_raspberrypi/blob/master/img/okgoogle.jpg?raw=true)
 
-5. See the [Troubleshooting](https://developers.google.com/assistant/sdk/prototype/getting-started-pi-python/troubleshooting) page if you run into issues.
+6. See the [Troubleshooting](https://developers.google.com/assistant/sdk/prototype/getting-started-pi-python/troubleshooting) page if you run into issues.
 
 
 ### How to use the on-board APA102 LEDs
@@ -203,6 +213,71 @@ on
 on
 off
 ```
+
+
+### User Button triggers Google Assisant
+
+There is an esay way to use a button(instead of speaking "ok google") to trigger Google Assisant.
+
+- Modify `pushtotalk.py`
+
+```
+// when using our Raspbian image
+cd /usr/local/lib/python2.7/dist-packages/googlesamples/assistant/grpc
+sudo nano pushtotalk.py
+```
+
+Go to the buttom of the file(Line 301), then modify as the following code and save:  
+
+```Python
+    with SampleAssistant(conversation_stream,
+                         grpc_channel, grpc_deadline) as assistant:
+        # If file arguments are supplied:
+        # exit after the first turn of the conversation.
+        if input_audio_file or output_audio_file:
+            assistant.converse()
+            return
+
+        # If no file arguments supplied:
+        # keep recording voice requests using the microphone
+        # and playing back assistant response using the speaker.
+        # When the once flag is set, don't wait for a trigger. Otherwise, wait.
+        wait_for_user_trigger = not once
+        import RPi.GPIO as GPIO
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(17,GPIO.IN)
+        while True:
+            if wait_for_user_trigger:
+                state = GPIO.input(17)
+                logging.info('Press the button to send a new request...')
+                if state:
+                    continue
+                else:
+                    pass
+               # click.pause(info='Press Enter to send a new request...')
+            continue_conversation = assistant.converse()
+            # wait for user trigger if there is no follow-up turn in
+            # the conversation.
+            wait_for_user_trigger = not continue_conversation
+
+            # If we only want one conversation, break.
+            if once and (not continue_conversation):
+                break
+
+
+if __name__ == '__main__':
+    main()
+```
+
+- Run the command to test:
+
+```
+$ googlesamples-assistant-pushtotalk
+```
+
+- The demo will be displayed as below:
+
+![](https://github.com/SeeedDocument/MIC_HATv1.0_for_raspberrypi/blob/master/img/button.jpg?raw=true)
 
 
 ### About our Raspbian image
