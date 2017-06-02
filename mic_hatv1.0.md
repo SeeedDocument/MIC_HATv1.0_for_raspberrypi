@@ -10,12 +10,26 @@ sku:
 
 ![](https://github.com/SeeedDocument/MIC_HATv1.0_for_raspberrypi/blob/master/img/2mics-zero-high-res.jpg?raw=true)
 
+*   [Features](#features)
+*   [Application Ideas](#ideas)
+*   [Hardware Overview](#overview)
+*   [Usage](#usage)
+    *   [Connect ReSpeaker 2-Mics Pi HAT to Raspberry Pi](#connect)
+    *   [Setup the driver on Raspberry Pi](#setup-driver)
+    *   [Configure sound settings and adjust the volume with **alsamixer**](#configure-alsa)
+    *   [Getting started with **Google Assistant**](#getting-started-google-assistant)
+    *   [How to use the on-board APA102 LEDs](#use-leds)
+    *   [How to use the on-board User Button](#use-button)
+    *   [User Button triggers Google Assisant](#trigger-google-assistant-with-button)
+    *   [About our Raspbian image](#images)
+*   [Resources](#resources)
+    
 ReSpeaker 2-Mics Pi HAT is a dual-microphone expansion board for Raspberry Pi designed for AI and voice applications. This means that you can build a more powerful and flexible voice product that integrates Amazon Alexa Voice Service, Google Assistant, and so on.
 
 
 The board is developed based on WM8960, a low power stereo codec. There are 2 microphones on both sides of the board for collecting sounds and it also provides 3 APA102 RGB LEDs, 1 User Button and 2 on-board Grove interfaces for expanding your applications. What is more, 3.5mm Audio Jack or JST 2.0 Speaker Out are both available for audio output.
 
-## Features
+<h2 id="featuresw">Features</h2>
 
 * Raspberry Pi compatible(Support Raspberry Pi Zero and Zero W, Raspberry Pi B+, Raspberry Pi 2 B and Raspberry Pi 3 B)
 * 2 Microphones
@@ -24,12 +38,12 @@ The board is developed based on WM8960, a low power stereo codec. There are 2 mi
 * 3.5mm Audio Jack
 * JST2.0 Speaker Out
 
-## Application Ideas
+<h2 id="ideas">Application Ideas</h2>
 
 * Voice Interaction Application
 * AI Assistant
 
-## Hardware Overview
+<h2 id="overview">Hardware Overview</h2>
 
 ![](https://github.com/SeeedDocument/MIC_HATv1.0_for_raspberrypi/blob/master/img/mic_hatv1.0.png?raw=true)
 
@@ -44,9 +58,9 @@ The board is developed based on WM8960, a low power stereo codec. There are 2 mi
 - JST 2.0 SPEAKER OUT: for connecting speaker with JST 2.0 connector
 - 3.5mm AUDIO JACK: for connecting headphone or speaker with 3.5mm Audio Plug
 
-## Usage
+<h2 id="usage">Usage</h2>
 
-### Connect ReSpeaker 2-Mics Pi HAT to Raspberry Pi
+<h3 id="connect">Connect ReSpeaker 2-Mics Pi HAT to Raspberry Pi</h3>
 
 Mount ReSpeaker 2-Mics Pi HAT on your Raspberry Pi, make sure that the pins are properly aligned when stacking the ReSpeaker 2-Mics Pi HAT.
 
@@ -54,7 +68,7 @@ Mount ReSpeaker 2-Mics Pi HAT on your Raspberry Pi, make sure that the pins are 
 ![connection picture2](https://github.com/SeeedDocument/MIC_HATv1.0_for_raspberrypi/blob/master/img/connection2.jpg?raw=true)
 ![connection picture3](https://github.com/yexiaobo-seeedstudio/MIC_HATv1.0_for_raspberrypi/blob/master/img/stack-on-zero.jpg?raw=true)
 
-### Setup the driver on Raspberry Pi
+<h3 id="setup-driver">Setup the driver on Raspberry Pi</h3>
 
 While the upstream wm8960 codec is not currently supported by current Pi kernel builds, upstream wm8960 has some bugs, we had fixed it. we must build it manually. Or you could download and use our [raspbian image(click for guidance)](#about-our-raspbian-image), in which the driver is pre-installed.
 
@@ -93,7 +107,7 @@ arecord -f cd -Dhw:0 | aplay -Dhw:0
 
 Enjoy!
 
-### Configure sound settings and adjust the volume with **alsamixer**
+<h3 id="configure-alsa">Configure sound settings and adjust the volume with **alsamixer**</h3>
 
 **alsamixer** is a graphical mixer program for the Advanced Linux Sound Architecture (ALSA) that is used to configure sound settings and adjust the volume. 
 
@@ -111,7 +125,7 @@ To test the volume after configuration:
 arecord -f cd -Dhw:0 | aplay -Dhw:0
 ```
 
-### Getting started with **Google Assistant**
+<h3 id="getting-started-google-assistant">Getting started with **Google Assistant**</h3>
 
 There are 2 ways to get started with Google Assistant([what is  Google Assistant](https://assistant.google.com/)), the first is that you could integrate the Google Assistant Library into your raspberry pi system. Here is the link to [Google official guidance](https://developers.google.com/assistant/sdk/prototype/getting-started-pi-python/run-sample). And the other way is that you could download the [raspbian image](#about-our-raspbian-image) we built, in which the Google Assistant Library and example are pre-installed. The following guide will show you how to get started with Google Assistant when using our raspbian image.
 
@@ -158,7 +172,7 @@ pi@raspberrypi:~ $ source env/bin/activate
 6. See the [Troubleshooting](https://developers.google.com/assistant/sdk/prototype/getting-started-pi-python/troubleshooting) page if you run into issues.
 
 
-### How to use the on-board APA102 LEDs
+<h3 id="use-leds">How to use the on-board APA102 LEDs</h3>
 
 Each on-board APA102 LED has an additional driver chip. The driver chip takes care of receiving the desired colour via its input lines, and then holding this colour until a new command is received.
 
@@ -176,7 +190,7 @@ git clone https://github.com/KillingJacky/APA102_Pi.git
 - Run the sample lightshow: `python runcolorcycle.py`
 - [More informations](https://github.com/KillingJacky/APA102_Pi)
 
-### How to use User Button
+<h3 id="use-button">How to use the on-board User Button</h3>
 
 There is an on-board User Button, which is connected to GPIO17. Now we will try to detect it with python and RPi.GPIO.
 
@@ -214,8 +228,7 @@ on
 off
 ```
 
-
-### User Button triggers Google Assisant
+<h3 id="trigger-google-assistant-with-button">User Button triggers Google Assisant</h3>
 
 There is an esay way to use a button(instead of speaking "ok google") to trigger Google Assisant.
 
@@ -280,7 +293,7 @@ $ googlesamples-assistant-pushtotalk
 ![](https://github.com/SeeedDocument/MIC_HATv1.0_for_raspberrypi/blob/master/img/button.jpg?raw=true)
 
 
-### About our Raspbian image
+<h3 id="images">About our Raspbian image</h3>
 
 We have built a Raspbian iamge for your convenience, in which ReSpeaker 2-Mics Pi HAT driver, the Google Assistant Library and APA102 LEDs library are pre-installed. 
 
@@ -288,8 +301,9 @@ We have built a Raspbian iamge for your convenience, in which ReSpeaker 2-Mics P
 
 - [How to install the image](https://www.raspberrypi.org/documentation/installation/installing-images/)
 
+<h2 id="resources">Resources</h2>
 
-## Resources
 - [Download our Raspbian image](https://s3-us-west-2.amazonaws.com/wiki.seeed.cc/001share/seeed-raspbian-jessie-20170523.7z)
 - [Schematics in Eagle](https://github.com/SeeedDocument/MIC_HATv1.0_for_raspberrypi/blob/master/src/ReSpeaker%202-Mics%20Pi%20HAT.sch)
 - [PCB in Eagle](https://github.com/SeeedDocument/MIC_HATv1.0_for_raspberrypi/blob/master/src/ReSpeaker%202-Mics%20Pi%20HAT.brd)
+- [Google Assistant SDK Getting Started](https://developers.google.com/assistant/sdk/prototype/getting-started-pi-python/)
