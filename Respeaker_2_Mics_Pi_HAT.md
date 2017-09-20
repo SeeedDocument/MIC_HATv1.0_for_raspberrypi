@@ -57,39 +57,52 @@ Mount ReSpeaker 2-Mics Pi HAT on your Raspberry Pi, make sure that the pins are 
 
 ### Setup the driver on Raspberry Pi
 
-While the upstream wm8960 codec is not currently supported by current Pi kernel builds, upstream wm8960 has some bugs, we had fixed it. we must build it manually. Or you could download and use our [raspbian image(click for guidance)](#about-our-raspbian-image), in which the driver is pre-installed.
+While the upstream wm8960 codec is not currently supported by current Pi kernel builds, upstream wm8960 has some bugs, we had fixed it. We must build it manually.
 
-Get the seeed voice card source code.
+Make sure that you are running [the lastest Raspbian Operating System(debian 9)](https://www.raspberrypi.org/downloads/raspbian/) on your Pi. *(updated at 2017.09.15)*
+
+Then get the seeed voice card source code, install and reboot.
 
 ```
-git clone --depth=1 http://git.oschina.net/seeed-se/seeed-voicecard
+git clone https://github.com/respeaker/seeed-voicecard.git
 cd seeed-voicecard
-sudo ./install.sh
+sudo ./install.sh 2mic
 reboot
 ```
 
 Check that the sound card name matches the source code seeed-voicecard.
 
 ```
-pi@raspberrypi:~ $ aplay -l
+pi@raspberrypi:~/seeed-voicecard $ aplay -l
 **** List of PLAYBACK Hardware Devices ****
-card 0: seeedvoicecard [seeed-voicecard], device 0: bcm2835-i2s-wm8960-hifi wm8960-hifi-0 []
+card 0: ALSA [bcm2835 ALSA], device 0: bcm2835 ALSA [bcm2835 ALSA]
+  Subdevices: 8/8
+  Subdevice #0: subdevice #0
+  Subdevice #1: subdevice #1
+  Subdevice #2: subdevice #2
+  Subdevice #3: subdevice #3
+  Subdevice #4: subdevice #4
+  Subdevice #5: subdevice #5
+  Subdevice #6: subdevice #6
+  Subdevice #7: subdevice #7
+card 0: ALSA [bcm2835 ALSA], device 1: bcm2835 ALSA [bcm2835 IEC958/HDMI]
   Subdevices: 1/1
   Subdevice #0: subdevice #0
+card 1: seeed2micvoicec [seeed-2mic-voicecard], device 0: bcm2835-i2s-wm8960-hifi wm8960-hifi-0 []
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+pi@raspberrypi:~/seeed-voicecard $ arecord -l
+**** List of CAPTURE Hardware Devices ****
+card 1: seeed2micvoicec [seeed-2mic-voicecard], device 0: bcm2835-i2s-wm8960-hifi wm8960-hifi-0 []
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+pi@raspberrypi:~/seeed-voicecard $
 ```
-
-Next apply the alsa controls setting
-
-```
-sudo alsactl --file=asound.state restore
-```
-
-If you want to change the alsa settings, You can use `sudo alsactl --file=asound.state store` to save it.
 
 Test, you will hear what you say to the microphones(don't forget to plug in an earphone or a speaker):
 
 ```
-arecord -f cd -Dhw:0 | aplay -Dhw:0
+arecord -f cd -Dhw:1 | aplay -Dhw:1
 ```
 
 Enjoy!
@@ -106,21 +119,32 @@ pi@raspberrypi:~ $ alsamixer
 
 The Left and right arrow keys are used to select the channel or device and the Up and Down Arrows control the volume for the currently selected device. Quit the program with ALT+Q, or by hitting the Esc key. [More information](https://en.wikipedia.org/wiki/Alsamixer)
 
-To test the volume after configuration:
-
-```
-arecord -f cd -Dhw:0 | aplay -Dhw:0
-```
 
 ### Getting started with **Google Assistant**
 
-There are 2 ways to get started with Google Assistant([what is  Google Assistant](https://assistant.google.com/)), the first is that you could integrate the Google Assistant Library into your raspberry pi system. Here is the link to [Google official guidance](https://developers.google.com/assistant/sdk/prototype/getting-started-pi-python/run-sample). And the other way is that you could download the [raspbian image](#about-our-raspbian-image) we built, in which the Google Assistant Library and example are pre-installed. The following guide will show you how to get started with Google Assistant when using our raspbian image.
+To get started with Google Assistant([what is  Google Assistant](https://assistant.google.com/)), the first is that you should integrate the Google Assistant Library into your raspberry pi system. Here is the link to [Google official guidance](https://developers.google.com/assistant/sdk/prototype/getting-started-pi-python/run-sample).
+
+And the following guide will also show you how to get started with Google Assistant.
 
 1. Configure a Developer Project and get JSON file
 
     Follow step 1. 2. 3. 4. in the  [guide](https://developers.google.com/assistant/sdk/prototype/getting-started-pi-python/config-dev-project-and-account#config-dev-project) to configure a project on Google Cloud Platform and create an OAuth Client ID JSON file. Don't forget to copy the JSON file to your Raspberry Pi.
 
-2. Authorize the Google Assistant SDK sample to make Google Assistant queries for the given Google Account. Reference the JSON file you copied over to the device in a previous step.
+2. Use a Python virtual environment to isolate the SDK and its dependencies from the system Python packages.
+```
+sudo apt-get update
+sudo apt-get install python3-dev python3-venv # Use python3.4-venv if the package cannot be found.
+python3 -m venv env
+env/bin/python -m pip install --upgrade pip setuptools
+source env/bin/activate
+```
+
+3. The Google Assistant SDK package contains all the code required to get the Google Assistant running on the device, including the library and sample code. Use pip to install the latest version of the Python package in the virtual environment:
+```
+(env) $ python -m pip install --upgrade google-assistant-library
+```
+
+4. Authorize the Google Assistant SDK sample to make Google Assistant queries for the given Google Account. Reference the JSON file you copied over to the device in Step 1.
 ```
 pi@raspberrypi:~ $ google-oauthlib-tool --client-secrets /home/pi/client_secret_client-id.json --scope https://www.googleapis.com/auth/assistant-sdk-prototype --save --headless
 ```
@@ -133,7 +157,7 @@ Enter the authorization code:
    * It should then display: OAuth credentials initialized.
    * If instead it displays: InvalidGrantError then an invalid code was entered. Try again, taking care to copy and paste the entire code.
 
-3. Install **pulseaudio** and let it run in background
+5. Install **pulseaudio** and let it run in background
 ```
 pi@raspberrypi:~ $ sudo apt install pulseaudio
 pi@raspberrypi:~ $ pulseaudio &
@@ -145,18 +169,18 @@ E: [pulseaudio] bluez4-util.c: org.bluez.Manager.GetProperties() failed: org.fre
 
 * the pulseaudio error log could be ignored here
 
-4. Start the Google Assistant demo
+6. Start the Google Assistant demo
 ```
 pi@raspberrypi:~ $ alsamixer    // To adjust the volume
 pi@raspberrypi:~ $ source env/bin/activate
 (env) pi@raspberrypi:~ $ env/bin/google-assistant-demo
 ```
 
-5. Say *Ok Google* or *Hey Google*, followed by your query. The Assistant should respond. If the Assistant does not respond, follow the [troubleshooting instructions](https://developers.google.com/assistant/sdk/prototype/getting-started-pi-python/troubleshooting#hotword).
+7. Say *Ok Google* or *Hey Google*, followed by your query. The Assistant should respond. If the Assistant does not respond, follow the [troubleshooting instructions](https://developers.google.com/assistant/sdk/prototype/getting-started-pi-python/troubleshooting#hotword).
 
     ![run demo](https://github.com/SeeedDocument/MIC_HATv1.0_for_raspberrypi/blob/master/img/okgoogle.jpg?raw=true)
 
-6. See the [Troubleshooting](https://developers.google.com/assistant/sdk/prototype/getting-started-pi-python/troubleshooting) page if you run into issues.
+8. See the [Troubleshooting](https://developers.google.com/assistant/sdk/prototype/getting-started-pi-python/troubleshooting) page if you run into issues.
 
 
 ### How to use the on-board APA102 LEDs
@@ -166,16 +190,15 @@ Each on-board APA102 LED has an additional driver chip. The driver chip takes ca
 ![](https://github.com/SeeedDocument/MIC_HATv1.0_for_raspberrypi/blob/master/img/led.gif?raw=true)
 
 - Activate SPI: `sudo raspi-config`; Go to "Interfacing Options"; Go to "SPI"; Enable SPI; Exit the tool and reboot
-- Get the APA102 Library and sample light programs(if you are using our [raspbian image](#about-our-raspbian-image), please skip this step):
+- Get the APA102 Library and sample light programs:
 
 ```
 cd ~/
-git clone https://github.com/KillingJacky/APA102_Pi.git
+git clone https://github.com/respeaker/mic_hat.git
+sudo pip install spidev
+cd mic_hat
+python pixels.py
 ```
-
-- You might want to set the number of LEDs to match your strip: `cd ~/APA102_Pi && nano runcolorcycle.py`; Update the number, Ctrl-X and "Yes" to save.
-- Run the sample lightshow: `python runcolorcycle.py`
-- [More informations](https://github.com/KillingJacky/APA102_Pi)
 
 ### How to use User Button
 
@@ -283,14 +306,11 @@ $ googlesamples-assistant-pushtotalk
 
 ### About our Raspbian image
 
-We have built a Raspbian iamge for your convenience, in which ReSpeaker 2-Mics Pi HAT driver, the Google Assistant Library and APA102 LEDs library are pre-installed.
-
-- [Download our Raspbian image](https://s3-us-west-2.amazonaws.com/wiki.seeed.cc/001share/seeed-raspbian-jessie-20170523.7z)
+As Raspbian Operating System is updated to Debian 9, we won't provide our Raspbian image anymore. Click [here](https://www.raspberrypi.org/downloads/raspbian/) to get the lastest Raspbian Operating System.
 
 - [How to install the image](https://www.raspberrypi.org/documentation/installation/installing-images/)
 
 
 ## Resources
-- [Download our Raspbian image](https://s3-us-west-2.amazonaws.com/wiki.seeed.cc/001share/seeed-raspbian-jessie-20170523.7z)
 - [Schematics in Eagle](https://github.com/SeeedDocument/MIC_HATv1.0_for_raspberrypi/blob/master/src/ReSpeaker%202-Mics%20Pi%20HAT.sch)
 - [PCB in Eagle](https://github.com/SeeedDocument/MIC_HATv1.0_for_raspberrypi/blob/master/src/ReSpeaker%202-Mics%20Pi%20HAT.brd)
