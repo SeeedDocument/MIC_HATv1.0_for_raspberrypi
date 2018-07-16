@@ -33,9 +33,9 @@ stream = p.open(
             input=True,
             start=False,)
 
-APP_ID = '9861187'
-API_KEY = 'jZBwmK1FeYTUOhCbB9W4bT2i'
-SECRET_KEY = 'ca511408b30b241b2355f94e5139928a'
+APP_ID = ''
+API_KEY = ''
+SECRET_KEY = ''
 
 
 aipSpeech = AipSpeech(APP_ID, API_KEY, SECRET_KEY)
